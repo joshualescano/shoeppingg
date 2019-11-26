@@ -1,7 +1,8 @@
 export class Order{
     ordertID:Number;
-    customerID:Number;
-    productID:Number;
-    orderQuantity:number;
+    cusUsername:String;
+    prodName:String;
+    orderQuantity:Number;
     totalPrice:Number
+    buyNow:Boolean
 }

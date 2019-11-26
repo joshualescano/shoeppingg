@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import {CustomerService} from '../customer.service';
 import { Customer } from '../customer';
+import  swal  from 'sweetalert';
+import {AuthGuardService} from '../auth-guard.service';
 
-
+///11
 @Component({
   selector: 'app-usermanagements',
   templateUrl: './usermanagement.component.html',
@@ -20,7 +22,7 @@ export class UsermanagementComponent {
   private birthday:String;
   private phone:Number;
 
-  constructor(private customerService:CustomerService){
+  constructor(private customerService:CustomerService, private authGuardService:AuthGuardService){
 
   }
   ngOnInit(){
@@ -33,7 +35,7 @@ export class UsermanagementComponent {
     });
   }
 
-  updateCustomer(id){
+  async updateCustomer(id){
     var customer = new Customer();
     customer.username = this.username;
     customer.password = this.password;
@@ -43,16 +45,40 @@ export class UsermanagementComponent {
     customer.birthday = this.birthday;
     customer.phone = this.phone;
 
-    this.customerService.updateCustomer(customer, id).subscribe((data)=>{
-      console.log(data);
-      this.getCustomers()
+    const willUpdate = await swal({
+      title: "Are you sure do you want to Update?",
+      text: " Click outside if no",
+      icon: "warning",
+      dangerMode: true,
     });
+     
+    if (willUpdate) {
+      this.customerService.updateCustomer(customer, id).subscribe((data)=>{
+        console.log(data);
+        this.getCustomers()
+      });
+      swal("Updated!", "Item has been updated!", "success");
+    } 
   }
   
-  deleteCustomer(id){
-    this.customerService.deleteCustomer(id).subscribe((data)=>{
-      console.log(data);
-      this.getCustomers()
+  async deleteCustomer(id){
+
+    const willDelete = await swal({
+      title: "Are you sure do you want to delete?",
+      text: " Click outside if no",
+      icon: "warning",
+      dangerMode: true,
     });
-  }
+     
+    if (willDelete) {
+      this.customerService.deleteCustomer(id).subscribe((data)=>{
+        console.log(data);
+        this.getCustomers()
+      });
+      swal("Deleted!", "Item has been deleted!", "success");
+    } 
+
+
+
+  } 
 }
